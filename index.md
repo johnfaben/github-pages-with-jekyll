@@ -1,3 +1,3 @@
 # Welcome to my blog
 
-I'm glad you are here. I plan to talk about ...
+It's a place to easily write about code, where I can easily refer to other code I've written

@@ -45,13 +45,13 @@ The output of the ML model is a series of predictions, each one consisting of a 
 
 The model is very confident of some predictions - these correspond to the actual QH, which you can see is in the West hand. It also has one low confident prediction (the first one) that the card is in another hand. This corresponds to the actual location of the HK in the South hand. 
 
-![A full deal](/images/2.jpg)
+![A full deal](/johnfaben/images/2.jpg)
 
 The output we actually want is a simple list of card and which hand they are in, which we can then easily convert into whatever format we want (e.g. pbn/json/etc.). The intermediate step is a list of cards with our best guess as to that card's location. Once we have this, we can relatively easily calculate which hand each card is in (the current approach is to use k-means clustering, although this is probably actually overkill, and we could hard-code something if needed, it works for now). 
 
 So, how do we get from the list of predictions with various levels of confidence to a list of cards with locations? Let's have a look at what we get with the simplest possible logic.
 
-<h4>Just take the highest confidence prediction</h4>
+####Just take the highest confidence prediction
 
 Here's the pbn we get from the above image with this logic: 
 
@@ -101,3 +101,7 @@ The highest confidence prediction for the location of the club 5 is in the same 
 There are some other cards where there are just no predictions at all for the location of that card. (e.g. the QH, the AS and the TS). 
 
 There are some things we can try to work around these sort of issues - e.g. if we have the location of most of the cards (or if there are only cards missing from one hand), we could infer the location of the missing cards. Similarly, we might be able to build some logic that relies on the fact that it's not possible for two cards to be in the same place. One difficulty with the latter is that while the boxes overlap, they're not identical.
+
+####Next steps
+
+My next plan for this is to build something that will need to be part of the final product anyway - code that checks if the final output we've produced is a valid PBN (with 52 cards, 13 cards in each hand, etc), and throws a (useful) error if not. I will also build something into this module which checks for things which are very straightforward to fix, and fixes them (e.g. if there are 51 cards in the pbn, it's easy enough to infer where the 52nd is, but there are other times when this sort of thing should work too - mostly when all the missing cards are in the same hand, but there may be other cases). We'll also keep track of which cards had their positions inferred by any such logic, so that we can tell the user, and ask them to check that those cards have been properly placed. 
